@@ -37,22 +37,23 @@ function generateLevelData(level, width = 800, random = Math.random) {
 /** Rezolva coliziunea player-inamic: stomp, invincibilitate sau damage. */
 function resolveEnemyCollision(player, enemy, invincible = false) {
   if (!enemy.alive || invincible) return { type: 'none', score: 0 };
+  
   const overlaps = player.x < enemy.x + enemy.width &&
     player.x + player.width > enemy.x &&
     player.y < enemy.y + enemy.height &&
     player.y + player.height > enemy.y;
   if (!overlaps) return { type: 'none', score: 0 };
 
-  const playerCenterX = player.x + player.width / 2;
-  const playerCenterY = player.y + player.height / 2;
-  const enemyCenterX = enemy.x + enemy.width / 2;
-  const enemyCenterY = enemy.y + enemy.height / 2;
-  const distance = Math.hypot(playerCenterX - enemyCenterX, playerCenterY - enemyCenterY);
-  if (player.vy > 0 && distance < 20) {
+  const playerBottom = player.y + player.height;
+  const enemyTop = enemy.y;
+  
+  // Player cade de sus pe inamic
+  if (player.vy > 0 && playerBottom - player.vy <= enemyTop + 10) {
     enemy.alive = false;
     player.vy = -8;
     return { type: 'stomp', score: 20 };
   }
+  
   return { type: 'damage', score: 0 };
 }
 
@@ -71,7 +72,11 @@ function updateUI(elements, state) {
 /** Simuleaza fluxul de game over pentru testare si UI. */
 function loseLife(state) {
   const next = { ...state, lives: state.lives - 1 };
-  return next.lives <= 0 ? { ...next, gameRunning: false, gameOver: true } : next;
+  return {
+    ...next,
+    gameRunning: next.lives > 0,
+    gameOver: next.lives <= 0
+  };
 }
 
 /** Salveaza si restaureaza un checkpoint la fiecare al treilea nivel. */

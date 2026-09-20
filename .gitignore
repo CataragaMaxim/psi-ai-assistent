@@ -1,0 +1,53 @@
+# ===== Dependențe Node.js =====
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# ===== Testare și coverage =====
+coverage/
+.nyc_output/
+*.lcov
+
+# ===== Build output =====
+dist/
+build/
+*.min.js
+*.min.css
+
+# ===== Fișiere de sistem =====
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ===== IDE și editor =====
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ===== Log-uri =====
+*.log
+logs/
+*.pid
+
+# ===== Variabile de mediu (SECRETE) =====
+.env
+.env.local
+.env.*.local
+
+# ===== Cache =====
+.cache/
+.parcel-cache/
+.eslintcache
+
+# ===== Jest =====
+.jest-cache/
+
+# ===== Temporare =====
+tmp/
+temp/
+*.tmp
