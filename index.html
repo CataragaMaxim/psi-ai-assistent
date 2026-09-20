@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pixel Quest | Platformer</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg-deep: #090b18;
+      --bg-blue: #151337;
+      --panel: rgba(21, 18, 52, 0.86);
+      --cyan: #57f4ff;
+      --pink: #ff4fa3;
+      --gold: #ffd166;
+      --text: #f4f4ff;
+      --muted: #a8a5c6;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      overflow-x: hidden;
+      background:
+        radial-gradient(circle at 18% 15%, rgba(255, 79, 163, 0.15), transparent 32%),
+        radial-gradient(circle at 82% 78%, rgba(87, 244, 255, 0.13), transparent 35%),
+        linear-gradient(145deg, var(--bg-deep), var(--bg-blue));
+      color: var(--text);
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+    }
+
+    .game-shell {
+      width: min(900px, calc(100vw - 32px));
+      padding: 28px;
+      border: 1px solid rgba(87, 244, 255, 0.22);
+      background: linear-gradient(180deg, rgba(18, 16, 48, 0.94), rgba(9, 11, 24, 0.9));
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45), 0 0 60px rgba(87, 244, 255, 0.08);
+    }
+
+    .eyebrow {
+      margin: 0 0 5px;
+      color: var(--cyan);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0 0 22px;
+      color: var(--text);
+      font-size: clamp(2rem, 7vw, 3.7rem);
+      letter-spacing: 0.05em;
+      line-height: 0.95;
+      text-shadow: 4px 4px 0 rgba(255, 79, 163, 0.32);
+    }
+
+    .hud {
+      display: flex;
+      gap: 12px;
+      margin: 0 0 14px;
+      padding: 10px;
+      border: 1px solid rgba(87, 244, 255, 0.25);
+      background: rgba(8, 10, 28, 0.68);
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.24);
+      animation: hud-fade-in 700ms ease-out both;
+      font-family: "Courier New", monospace;
+    }
+
+    @keyframes hud-fade-in {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .stat {
+      min-width: 0;
+      flex: 1;
+      padding: 11px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(21, 18, 52, 0.78);
+    }
+
+    .stat-label {
+      display: block;
+      color: var(--muted);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .stat-value {
+      display: block;
+      margin-top: 2px;
+      color: var(--gold);
+      font-size: 1.35rem;
+      font-weight: 800;
+    }
+
+    .canvas-frame {
+      position: relative;
+      padding: 5px;
+      background: linear-gradient(135deg, var(--cyan), var(--pink));
+      box-shadow: 0 0 22px rgba(87, 244, 255, 0.3), 0 0 42px rgba(255, 79, 163, 0.14);
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      image-rendering: pixelated;
+      background: #11152b;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    kbd {
+      padding: 3px 7px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-bottom-width: 2px;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.08);
+      font-family: inherit;
+    }
+
+    @media (max-width: 560px) {
+      .game-shell { padding: 18px; }
+      .hud { gap: 7px; }
+      .stat { padding: 9px; }
+      .stat-label { font-size: 0.58rem; letter-spacing: 0.08em; }
+      .stat-value { font-size: 1.1rem; }
+      .controls { display: block; line-height: 2; }
+    }
+  </style>
+</head>
+<body>
+  <main class="game-shell">
+    <p class="eyebrow">Arcade platformer</p>
+    <h1>Pixel Quest</h1>
+
+    <section class="hud" aria-label="Statistici joc">
+      <div class="stat">
+        <span class="stat-label">Vieti</span>
+        <span class="stat-value" id="lives">3</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Scor</span>
+        <span class="stat-value" id="score">0</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Nivel</span>
+        <span class="stat-value" id="level">1</span>
+      </div>
+    </section>
+
+    <div class="canvas-frame">
+      <canvas id="gameCanvas" width="800" height="400" aria-label="Zona de joc Pixel Quest"></canvas>
+    </div>
+
+    <div class="controls">
+      <span>Miscare: <kbd>A</kbd> <kbd>D</kbd> sau <kbd>&larr;</kbd> <kbd>&rarr;</kbd></span>
+      <span>Sari: <kbd>W</kbd> / <kbd>&uarr;</kbd> / <kbd>Space</kbd></span>
+    </div>
+  </main>
+  <script src="game.js" defer></script>
+</body>
+</html>

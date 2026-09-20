@@ -1,0 +1,13 @@
+{
+  "name": "pixel-quest",
+  "version": "1.0.0",
+  "description": "Joc platformer retro realizat cu HTML, CSS, JavaScript si Canvas.",
+  "main": "game.js",
+  "scripts": {
+    "test": "jest --runInBand",
+    "test:watch": "jest --watch"
+  },
+  "devDependencies": {
+    "jest": "^30.0.0"
+  }
+}
